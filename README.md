@@ -2,7 +2,7 @@
 
 Este projeto implementa um pipeline de dados para coleta, processamento e consolidação das Demonstrações Contábeis disponibilizadas pela ANS (Agência Nacional de Saúde Suplementar).
 
-O objetivo é automatizar o acesso aos dados públicos, aplicar regras de negócio contábeis e gerar um relatório consolidado pronto para análise.
+O objetivo é automatizar o acesso aos dados públicos da ANS, processar e consolidar as Demonstrações Contábeis dos últimos trimestres disponíveis, aplicando regras de negócio contábeis e gerando arquivos estruturados para análise posterior.
 
 ## Estrutura do Projeto
 
