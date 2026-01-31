@@ -1,20 +1,22 @@
 # Teste Técnico - Intuitive Care
 
-Este projeto implementa um pipeline de dados para coleta e processamento das Demonstrações Contábeis disponibilizadas pela ANS (Agência Nacional de Saúde Suplementar).
+Este projeto implementa um pipeline de dados para coleta, processamento e consolidação das Demonstrações Contábeis disponibilizadas pela ANS (Agência Nacional de Saúde Suplementar).
 
-O foco inicial é automatizar o acesso aos dados públicos, garantindo uma solução organizada e resiliente a mudanças na estrutura do site.
+O objetivo é automatizar o acesso aos dados públicos, aplicar regras de negócio contábeis e gerar um relatório consolidado pronto para análise.
 
 ## Estrutura do Projeto
 
-- **`ingestion/`**  
-  Scripts responsáveis por acessar o site da ANS e realizar o download automatizado dos arquivos.
+- **`ingestion/`** Scripts responsáveis pelo web scraping no site da ANS e download automatizado dos arquivos ZIP.
 
-- **`data/raw/`**  
-  Diretório local onde os arquivos ZIP brutos são armazenados.  
-  Esse diretório é ignorado pelo Git.
+- **`processing/`** Scripts de ETL (Extração, Transformação e Carga). Realizam a descompactação, filtragem contábil ("Despesas com Eventos/Sinistros") e consolidação dos dados.
 
-- **`docs/`**  
-  Documentação das decisões técnicas e trade-offs adotados no projeto.
+- **`data/`** - **`raw/`**: Armazena os arquivos ZIP brutos baixados (ignorado pelo Git).
+  - **`processed/`**: Armazena os CSVs extraídos e o arquivo final consolidado (`consolidado_despesas.csv` e `.zip`).
+
+- **`docs/`** Documentação das decisões técnicas e trade-offs adotados no projeto.
+
+- **`main.py`**
+  Script orquestrador que executa o pipeline completo (Ingestão + Processamento).
 
 ## Pré-requisitos
 
