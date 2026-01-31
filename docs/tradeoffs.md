@@ -41,3 +41,26 @@ Para evitar esse erro, o trimestre e o ano são definidos a partir do nome do ar
 Valores zerados ou negativos são descartados no momento do processamento. Como o objetivo é consolidar despesas efetivas, esses registros não agregam valor analítico e poderiam distorcer o resultado final.
 
 Ao final, os dados dos três trimestres são consolidados em um único CSV e compactados no arquivo `consolidado_despesas.zip`, conforme solicitado no teste.
+
+## 2.1 Validação de Dados
+
+Na validação cadastral, decidi verificar apenas o formato do CNPJ (14 dígitos numéricos) e não o cálculo matemático dos dígitos verificadores.
+
+O trade-off aqui é integridade financeira versus pureza cadastral. Bases históricas costumam ter erros de digitação. Se eu descartasse uma despesa válida por causa de um dígito errado no cadastro, o relatório financeiro ficaria incorreto. Preferi manter o dado financeiro e apenas gerar um aviso no log.
+
+## 2.2 Enriquecimento de Dados
+
+O arquivo da etapa anterior mantinha a coluna `CNPJ` vazia para respeitar o layout sem criar dados falsos na origem. Como não dava para usar uma coluna vazia como chave de join, utilizei o `REG_ANS` que existe nas duas bases.
+
+O processo seguiu a lógica:
+1. Recuperei o `REG_ANS` que havia sido preservado no campo Razão Social.
+2. Realizei o cruzamento utilizando o `REG_ANS`.
+3. Uma vez feito o vínculo, preenchi a coluna `CNPJ` (que estava vazia) com o dado oficial vindo do cadastro.
+
+Utilizei **Left Join** (tabela de despesas à esquerda). O motivo é que o arquivo de cadastro só tem operadoras ativas. Se uma empresa teve despesas no trimestre mas fechou depois, os dados dela sumiriam num Inner Join. O Left Join preserva a contabilidade correta.
+
+## 2.3 Agregação e Estatísticas
+
+Além da soma e média, incluí o Desvio Padrão. No contexto de saúde, desvio alto indica volatilidade na operação e gastos que oscilam muito entre trimestres, servindo como indicador de risco.
+
+A ordenação foi feita pelo maior volume total de despesas, focando nas operadoras de maior impacto. Salvei o arquivo final usando encoding `utf-8-sig`. Essa escolha garante que acentos (como em "SAÚDE") abram corretamente no Excel e Windows, evitando caracteres estranhos.

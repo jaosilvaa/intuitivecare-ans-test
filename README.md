@@ -9,9 +9,11 @@ O objetivo é automatizar o acesso aos dados públicos, aplicar regras de negóc
 - **`ingestion/`** Scripts responsáveis pelo web scraping no site da ANS e download automatizado dos arquivos ZIP.
 
 - **`processing/`** Scripts de ETL (Extração, Transformação e Carga). Realizam a descompactação, filtragem contábil ("Despesas com Eventos/Sinistros") e consolidação dos dados.
+  - `data_processor.py`: Limpeza e consolidação.
+  - `data_enrichment.py`: Enriquecimento com dados cadastrais e geração de estatísticas.
 
 - **`data/`** - **`raw/`**: Armazena os arquivos ZIP brutos baixados (ignorado pelo Git).
-  - **`processed/`**: Armazena os CSVs extraídos e o arquivo final consolidado (`consolidado_despesas.csv` e `.zip`).
+  - **`processed/`**: Armazena os CSVs extraídos e os arquivos finais (`consolidado_despesas.csv`, `despesas_agregadas.csv` e `.zip`).
 
 - **`docs/`** Documentação das decisões técnicas e trade-offs adotados no projeto.
 

@@ -6,6 +6,8 @@ from urllib.parse import urljoin
 BASE_URL = "https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/"
 OUTPUT_DIR = os.path.join("data", "raw")
 
+BASE_URL_CADOP = "https://dadosabertos.ans.gov.br/FTP/PDA/operadoras_de_plano_de_saude_ativas/"
+
 def get_soup(url):
     """
     Faz a requisição HTTP e retorna o HTML parseado.
@@ -55,11 +57,13 @@ def get_zips_from_year(year):
     
     return sorted(zip_links, reverse=True)
 
-def download_file(url):
+def download_file(url, filename=None):
     """
     Baixa um arquivo ZIP em partes para evitar uso excessivo de memória.
     """
-    filename = url.split('/')[-1]
+    if not filename:
+        filename = url.split('/')[-1]
+        
     filepath = os.path.join(OUTPUT_DIR, filename)
 
     if os.path.exists(filepath):
@@ -80,6 +84,20 @@ def download_file(url):
         if os.path.exists(filepath):
             os.remove(filepath)
         return False
+    
+def run_cadop_download():
+    """Baixa o arquivo de Cadastro de Operadoras (CADOP)."""
+    
+    print("[INFO] Buscando arquivo do CADOP...")
+    soup = get_soup(BASE_URL_CADOP)
+    if not soup: return
+
+    for link in soup.find_all('a'):
+        href = link.get('href', '')
+        if href.lower().endswith('.csv'):
+            file_url = urljoin(BASE_URL_CADOP, href)
+            download_file(file_url, "Relatorio_Cadop.csv") 
+            return
 
 def run():
     """
@@ -107,6 +125,8 @@ def run():
                 break
             if download_file(zip_url):
                 downloads_count += 1
+    
+    run_cadop_download()
 
     if downloads_count == 0:
         print("[AVISO] Nenhum arquivo foi baixado. Verifique a conexão ou o site.")
