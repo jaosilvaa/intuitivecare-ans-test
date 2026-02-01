@@ -95,6 +95,11 @@ def run() -> None:
         final_df["RazaoSocial"]
     )
     final_df["UF"] = final_df["UF_NEW"].fillna("Indefinido")
+    
+    if "Modalidade" in final_df.columns:
+        final_df["Modalidade"] = final_df["Modalidade"].fillna("Indefinido")
+    else:
+        final_df["Modalidade"] = "Indefinido"
 
     print("[INFO] Validando e formatando dados...")
 
@@ -115,7 +120,7 @@ def run() -> None:
     print("[INFO] Calculando estatísticas...")
 
     aggregated_df = (
-        final_df.groupby(["RazaoSocial", "CNPJ", "UF"])["ValorDespesas"]
+        final_df.groupby(["REG_ANS", "RazaoSocial", "CNPJ", "Modalidade", "UF"])["ValorDespesas"]
         .agg(
             Total_Despesas="sum",
             Media_Trimestral="mean",
@@ -134,10 +139,14 @@ def run() -> None:
         aggregated_df["Desvio_Padrao"].fillna(0).round(2)
     )
 
+    aggregated_df.rename(columns={"REG_ANS": "RegistroANS"}, inplace=True)
+
     aggregated_df = aggregated_df[
         [
-            "RazaoSocial",
+            "RegistroANS",
             "CNPJ",
+            "RazaoSocial",
+            "Modalidade",
             "UF",
             "Total_Despesas",
             "Media_Trimestral",

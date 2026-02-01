@@ -64,3 +64,5 @@ Utilizei **Left Join** (tabela de despesas à esquerda). O motivo é que o arqui
 Além da soma e média, incluí o Desvio Padrão. No contexto de saúde, desvio alto indica volatilidade na operação e gastos que oscilam muito entre trimestres, servindo como indicador de risco.
 
 A ordenação foi feita pelo maior volume total de despesas, focando nas operadoras de maior impacto. Salvei o arquivo final usando encoding `utf-8-sig`. Essa escolha garante que acentos (como em "SAÚDE") abram corretamente no Excel e Windows, evitando caracteres estranhos.
+
+Por fim, optei por manter as colunas RegistroANS e Modalidade no arquivo final agregado. Mesmo com a agregação sendo feita por operadora, esses campos fazem parte do cadastro da empresa e ajudam a manter a rastreabilidade dos dados. Além disso, essa escolha garante o cumprimento do que foi solicitado na etapa 2.2 e facilita etapas futuras, como a carga e o uso desses dados em um banco de dados.
