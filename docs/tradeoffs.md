@@ -66,3 +66,32 @@ Além da soma e média, incluí o Desvio Padrão. No contexto de saúde, desvio 
 A ordenação foi feita pelo maior volume total de despesas, focando nas operadoras de maior impacto. Salvei o arquivo final usando encoding `utf-8-sig`. Essa escolha garante que acentos (como em "SAÚDE") abram corretamente no Excel e Windows, evitando caracteres estranhos.
 
 Por fim, optei por manter as colunas RegistroANS e Modalidade no arquivo final agregado. Mesmo com a agregação sendo feita por operadora, esses campos fazem parte do cadastro da empresa e ajudam a manter a rastreabilidade dos dados. Além disso, essa escolha garante o cumprimento do que foi solicitado na etapa 2.2 e facilita etapas futuras, como a carga e o uso desses dados em um banco de dados.
+
+## 3.2 Modelagem de Banco de Dados
+
+Para a estrutura das tabelas, optei pela **Opção B (Normalização)**, separando os dados em duas tabelas principais: `operadoras` (dados cadastrais) e `demonstracoes_contabeis` (fatos financeiros).
+
+Essa decisão foi tomada pensando na manutenção e integridade:
+1.  Evita a repetição desnecessária da Razão Social e UF milhões de vezes na tabela de despesas.
+2.  Se uma operadora mudar de nome ou endereço, a atualização ocorre em apenas um registro.
+3.  Facilita o armazenamento, já que dados textuais ocupam mais espaço que chaves numéricas.
+
+Sobre a Chave Primária, escolhi o **Registro ANS** (`registro_ans`) em vez do CNPJ. O motivo é prático: nos arquivos de despesas da ANS, o CNPJ muitas vezes não está presente, mas o Registro ANS é obrigatório e único. Usar o CNPJ como chave impediria a importação de registros financeiros válidos que ainda não tiveram o CNPJ enriquecido.
+
+Para os valores monetários, utilizei o tipo `NUMERIC(18,2)`. Evitei o uso de `FLOAT` porque operações financeiras exigem precisão exata nos centavos, e tipos de ponto flutuante podem gerar erros de arredondamento acumulativos.
+
+## 3.3 Importação e Limpeza de Dados
+
+Os arquivos CSV gerados estão no padrão brasileiro (vírgula para decimal), enquanto o banco de dados (PostgreSQL) espera o padrão americano (ponto).
+
+Em vez de tentar realizar transformações complexas diretamente no comando de importação do banco, optei por criar um script auxiliar em Python (`db_importer.py`) que:
+1.  Lê os CSVs.
+2.  Normaliza os números (troca vírgula por ponto).
+3.  Trata strings (escapa aspas simples).
+4.  Gera um arquivo padronizado (`inserts.sql`).
+
+Essa abordagem desacopla a regra de negócio da infraestrutura do banco. O arquivo SQL gerado pode ser auditado antes de rodar e executado em qualquer ambiente sem depender de configurações regionais do servidor.
+
+Durante a importação, encontrei um caso crítico de integridade: algumas operadoras com dados históricos de despesas não constavam no arquivo de operadoras ativas (provavelmente empresas que já fecharam). Isso gerava erro de Chave Estrangeira.
+
+Para resolver sem perder o dado financeiro, o script identifica essas operadoras faltantes e cria automaticamente um cadastro provisório ("Operadora Histórica") na tabela de operadoras. Assim, mantemos a integridade referencial do banco sem descartar o histórico financeiro.
