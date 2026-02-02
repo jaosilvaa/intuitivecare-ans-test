@@ -95,3 +95,14 @@ Essa abordagem desacopla a regra de negócio da infraestrutura do banco. O arqui
 Durante a importação, encontrei um caso crítico de integridade: algumas operadoras com dados históricos de despesas não constavam no arquivo de operadoras ativas (provavelmente empresas que já fecharam). Isso gerava erro de Chave Estrangeira.
 
 Para resolver sem perder o dado financeiro, o script identifica essas operadoras faltantes e cria automaticamente um cadastro provisório ("Operadora Histórica") na tabela de operadoras. Assim, mantemos a integridade referencial do banco sem descartar o histórico financeiro.
+
+## 3.4 Queries Analíticas
+
+Para calcular o crescimento percentual das despesas, a comparação foi feita entre o primeiro e o último trimestre disponível para cada operadora. Como nem todas possuem dados em todos os períodos, a query identifica dinamicamente esses limites temporais a partir da base. Operadoras com apenas um registro histórico são desconsideradas, pois não existe base válida para comparação. Essa decisão evita distorções matemáticas e garante que o crescimento calculado represente apenas o período efetivamente registrado de cada empresa.
+
+A distribuição de despesas por UF foi calculada utilizando a tabela `despesas_agregadas`, criada durante a etapa de processamento. Essa tabela já contém os valores consolidados por operadora e estado, o que permite obter o total de despesas por UF e a média por operadora na mesma consulta. O uso dessa estrutura reduz o custo computacional, evita joins repetitivos com a tabela de fatos contábeis e atende diretamente ao desafio adicional proposto no documento em pdf.
+
+A verificação das operadoras acima da média geral foi realizada comparando as despesas individuais com a média do mercado em cada trimestre. O cálculo da média trimestral foi isolado em uma etapa própria, o que facilita a leitura e evita repetições desnecessárias na query principal. A partir dessa comparação, são contabilizados os trimestres em que a operadora ficou acima da média, mantendo apenas aquelas que atenderam ao critério de pelo menos dois dos três períodos analisados. A estrutura com CTEs torna a lógica mais clara e evita o uso de subqueries aninhadas, mantendo o código simples e fácil de manter, sem impacto relevante de performance para o volume de dados utilizado.
+
+
+
