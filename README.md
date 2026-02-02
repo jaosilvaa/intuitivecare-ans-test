@@ -14,7 +14,7 @@ O objetivo é automatizar o acesso aos dados públicos da ANS, processar e conso
 
 - **`sql/`** Scripts SQL para criação do banco de dados e consultas analíticas.
   - `create_tables.sql`: Estrutura das tabelas (DDL).
-  - `queries_analiticas.sql`: Respostas para as perguntas de negócio (DML).
+  - `analytical_queries.sql`: Respostas para as perguntas de negócio (DML).
 
 - **`data/`** - **`raw/`**: Armazena os arquivos ZIP brutos baixados (ignorado pelo Git).
   - **`processed/`**: Armazena os CSVs extraídos e os arquivos finais (`consolidado_despesas.csv`, `despesas_agregadas.csv` e `.zip`).
