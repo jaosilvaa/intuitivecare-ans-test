@@ -104,5 +104,14 @@ A distribuição de despesas por UF foi calculada utilizando a tabela `despesas_
 
 A verificação das operadoras acima da média geral foi realizada comparando as despesas individuais com a média do mercado em cada trimestre. O cálculo da média trimestral foi isolado em uma etapa própria, o que facilita a leitura e evita repetições desnecessárias na query principal. A partir dessa comparação, são contabilizados os trimestres em que a operadora ficou acima da média, mantendo apenas aquelas que atenderam ao critério de pelo menos dois dos três períodos analisados. A estrutura com CTEs torna a lógica mais clara e evita o uso de subqueries aninhadas, mantendo o código simples e fácil de manter, sem impacto relevante de performance para o volume de dados utilizado.
 
+## 4.2 Desenvolvimento da API
 
+Para o desenvolvimento do backend, optei pelo uso do FastAPI. A escolha foi motivada principalmente pela boa performance, simplicidade de configuração e pela geração automática da documentação via Swagger UI. Em um teste com prazo curto, essa funcionalidade reduz bastante o esforço de documentação manual e facilita a validação das rotas. A integração com o Pydantic também garante validação automática dos dados de entrada e saída, reduzindo erros comuns.
 
+A API utiliza diretamente os dados carregados no banco de dados criado na etapa anterior, mantendo separação clara entre processamento de dados (ETL) e consumo via API.
+
+A listagem de operadoras implementa paginação baseada em offset, utilizando os parâmetros `page` e `limit`. Essa abordagem é simples, fácil de entender e suficiente para o volume de dados utilizado no teste. A resposta retorna não apenas os registros, mas também metadados como total de itens, página atual e limite por página, permitindo que o frontend calcule corretamente a navegação.
+
+A busca de operadoras foi implementada no servidor, utilizando filtro por razão social (e podendo ser estendida para CNPJ). Essa decisão evita o tráfego desnecessário de grandes volumes de dados para o cliente e garante melhor desempenho, especialmente em cenários com muitas operadoras cadastradas.
+
+Para a rota de estatísticas, a API consulta diretamente a tabela `despesas_agregadas`, criada durante a etapa de processamento dos dados. Essa tabela já contém os valores consolidados, evitando a execução de operações pesadas como `SUM`, `AVG` e `GROUP BY` a cada requisição. O custo computacional fica concentrado no momento da carga dos dados, garantindo respostas rápidas para o consumo da API e melhor experiência no frontend.

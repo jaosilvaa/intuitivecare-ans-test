@@ -2,3 +2,9 @@ requests
 beautifulsoup4
 pandas
 openpyxl
+
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+pydantic

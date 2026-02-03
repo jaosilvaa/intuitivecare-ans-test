@@ -82,4 +82,5 @@ JOIN operadoras o ON p.registro_ans = o.registro_ans
 WHERE p.acima_da_media = 1
 GROUP BY p.registro_ans, o.razao_social
 HAVING COUNT(*) >= 2
-ORDER BY qtd_trimestres_acima DESC, o.razao_social;
+ORDER BY qtd_trimestres_acima DESC, o.razao_social
+LIMIT 10;
