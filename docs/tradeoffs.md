@@ -115,3 +115,17 @@ A listagem de operadoras implementa paginação baseada em offset, utilizando os
 A busca de operadoras foi implementada no servidor, utilizando filtro por razão social (e podendo ser estendida para CNPJ). Essa decisão evita o tráfego desnecessário de grandes volumes de dados para o cliente e garante melhor desempenho, especialmente em cenários com muitas operadoras cadastradas.
 
 Para a rota de estatísticas, a API consulta diretamente a tabela `despesas_agregadas`, criada durante a etapa de processamento dos dados. Essa tabela já contém os valores consolidados, evitando a execução de operações pesadas como `SUM`, `AVG` e `GROUP BY` a cada requisição. O custo computacional fica concentrado no momento da carga dos dados, garantindo respostas rápidas para o consumo da API e melhor experiência no frontend.
+
+## 4.3 Interface Web (Frontend)
+
+Para a construção da interface web, utilizei Vue.js como framework principal e Chart.js para a visualização gráfica dos dados. A escolha priorizou simplicidade, clareza de código e uma boa experiência de uso, evitando soluções mais complexas que não trariam ganhos reais dentro do escopo do teste.
+
+A busca de operadoras foi implementada no servidor. Embora uma busca totalmente client-side pudesse oferecer respostas imediatas, essa abordagem exigiria carregar toda a base no navegador, o que não escala bem conforme o volume de dados cresce. Delegar a filtragem ao backend permite aproveitar a indexação do banco de dados e reduz o tráfego de dados, mantendo o frontend responsável apenas pela apresentação.
+
+O gerenciamento de estado foi mantido propositalmente simples, utilizando apenas props e eventos para comunicação entre componentes. A estrutura da aplicação é rasa, concentrada principalmente na view principal e em componentes de tabela e gráfico, o que não justifica a introdução de soluções globais como Vuex ou Pinia. Essa decisão reduz código repetitivo, facilita a leitura e segue o princípio de manter a solução o mais simples possível.
+
+Para a listagem de operadoras, optei por paginação no servidor. Renderizar grandes volumes de linhas no DOM do navegador impactaria negativamente a performance e a responsividade da interface. Ao limitar a resposta da API a um número fixo de registros por página, a navegação permanece fluida independentemente do tamanho total da base.
+
+Durante as requisições assíncronas, o frontend fornece feedback visual ao usuário por meio de estados de carregamento. Isso evita a percepção de travamento da interface e deixa claro quando os dados ainda estão sendo processados. Falhas de comunicação com a API são tratadas com blocos try/catch, permitindo o registro de erros no console sem comprometer a execução da aplicação.
+
+A visualização gráfica de despesas por UF foi implementada consumindo diretamente a rota de estatísticas da API, que retorna os valores já agregados. Os dados exibidos no gráfico seguem uma formatação adequada ao contexto brasileiro, com valores monetários em reais e abreviação de grandes números. Essa escolha melhora a leitura e permite uma análise rápida da distribuição das despesas, atendendo diretamente ao requisito de negócio descrito no edital.

@@ -1,12 +1,24 @@
+# Python / Backend
 venv/
 .env
-
 __pycache__/
 *.pyc
 
-.DS_Store
-
+# Dados e Arquivos Temporários
 data/
-
 inserts.sql
 *.zip
+
+# Frontend / Node.js
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+
+# Sistema Operacional / IDEs
+.DS_Store
+.vscode/
+.idea/

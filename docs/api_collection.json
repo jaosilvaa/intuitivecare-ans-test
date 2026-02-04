@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "b8a6c8e1-5f2d-4b8a-9c7d-1a2b3c4d5e6f",
+		"name": "Teste Intuitive Care - API",
+		"description": "Coleção de rotas para o Teste Técnico da Intuitive Care. Contém endpoints de operadoras, histórico financeiro e estatísticas por UF.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Listar Operadoras (com Busca e Paginação)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/operadoras?page=1&limit=10&search=SAUDE",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"operadoras"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1",
+							"description": "Número da página"
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"description": "Itens por página"
+						},
+						{
+							"key": "search",
+							"value": "SAUDE",
+							"description": "Filtro por Razão Social (Opcional)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Detalhes da Operadora",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/operadoras/27452545000195",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"operadoras",
+						"27452545000195"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Histórico de Despesas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/operadoras/27452545000195/despesas",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"operadoras",
+						"27452545000195",
+						"despesas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Estatísticas (Por UF)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/estatisticas",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"estatisticas"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
